@@ -13,7 +13,7 @@ class AccountModifyService(
     private val accountRepository: AccountRepository,
 ) : AccountRegister {
     override fun register(request: AccountRegisterRequest): Account {
-        val account = Account.register(request)
+        val account = Account.from(request)
         return accountRepository.save(account)
     }
 }

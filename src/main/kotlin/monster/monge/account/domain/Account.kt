@@ -4,6 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import org.springframework.data.domain.AbstractAggregateRoot
 
 @Entity
 @Table(name = "accounts")
@@ -14,8 +15,9 @@ class Account(
     @GeneratedValue
     val id: Long? = null,
 ) {
+
     companion object {
-        fun register(request: AccountRegisterRequest) =
+        fun from(request: AccountRegisterRequest) =
             Account(request.email, request.providerId)
     }
 }
