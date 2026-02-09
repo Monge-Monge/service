@@ -58,3 +58,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootJar {
+    archiveFileName.set("app.jar")
+}
