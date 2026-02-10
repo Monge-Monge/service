@@ -1,6 +1,6 @@
 # 1. 실행 환경 (BellSoft Liberica JDK 17 lite 버전 사용)
 # Alpine 기반의 lite 버전은 용량이 매우 작고 가볍습니다.
-FROM bellsoft/liberica-openjdk-alpine:17
+FROM bellsoft/liberica-openjdk-alpine:25
 
 # 2. 컨테이너 내부 작업 디렉토리 설정
 WORKDIR /app
