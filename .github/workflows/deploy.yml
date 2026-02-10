@@ -31,7 +31,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest .
+          docker build --platform linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest
 
       # OCI 서버 배포
