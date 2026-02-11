@@ -66,6 +66,7 @@ jobs:
               -p 8080:8080 \
               -e TZ=Asia/Seoul \
               -e SVIX_WEBHOOK_SECRET="${{ secrets.SVIX_WEBHOOK_SECRET }}" \
+              -e CLERK_API_KEY="${{ secrets.CLERK_API_KEY }}"
               ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest
             
             # 4. 사용하지 않는 오래된 이미지 정리
