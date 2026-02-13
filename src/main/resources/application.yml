@@ -1,6 +1,25 @@
 spring:
   application:
     name: monge-service
+
+  datasource:
+    # 도커 컴포즈의 서비스 이름 'db'를 호스트로 사용합니다.
+    url: jdbc:postgresql://db:5432/mongedb
+    username: ${DB_USERNAME}  # 환경변수 사용 (CI/CD에서 주입)
+    password: ${DB_PASSWORD}  # 환경변수 사용 (CI/CD에서 주입)
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 개발 초기에는 update, 운영 환경에서는 validate 권장
+    show-sql: true     # 실행되는 SQL을 로그로 확인
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect # 방언 설정
+        jdbc:
+          time_zone: Asia/Seoul
+
   security:
     oauth2:
       resourceserver:

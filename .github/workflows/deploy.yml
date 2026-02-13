@@ -53,21 +53,20 @@ jobs:
           username: ${{ secrets.OCI_USERNAME }}
           key: ${{ secrets.OCI_KEY }}
           script: |
-            # 1. 최신 이미지 받아오기
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest
-            
-            # 2. 기존 컨테이너 중지 및 삭제
-            sudo docker stop monge-service || true
-            sudo docker rm monge-service || true
-            
-            # 3. 새 컨테이너 실행 (8080 포트)
-            sudo docker run -d \
-              --name monge-service \
-              -p 8080:8080 \
-              -e TZ=Asia/Seoul \
-              -e SVIX_WEBHOOK_SECRET="${{ secrets.SVIX_WEBHOOK_SECRET }}" \
-              -e CLERK_API_KEY="${{ secrets.CLERK_API_KEY }}" \
-              ${{ secrets.DOCKERHUB_USERNAME }}/monge-service:latest
-            
-            # 4. 사용하지 않는 오래된 이미지 정리
+            cd ~/app  # docker-compose.yml이 있는 폴더로 이동
+      
+            # .env 파일 동적 생성 (환경변수 관리)
+            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "SVIX_WEBHOOK_SECRET=${{ secrets.SVIX_WEBHOOK_SECRET }}" >> .env
+            echo "CLERK_API_KEY=${{ secrets.CLERK_API_KEY }}" >> .env
+              
+            # 1. 최신 이미지 풀링
+            sudo docker compose pull app
+              
+            # 2. 컨테이너 재시작 (이미지가 변경된 경우에만 app 서비스 재생성)
+            sudo docker compose up -d app
+              
+            # 3. 안쓰는 이미지 정리
             sudo docker image prune -f
