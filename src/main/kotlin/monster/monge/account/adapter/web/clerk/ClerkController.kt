@@ -29,7 +29,7 @@ class ClerkController(
 
         val event = objectMapper.readValue(payload, ClerkWebhookEvent::class.java)
 
-        if (event.type != "user.created") {
+        if (event.type == "user.created") {
             val userData = event.data
             val accountRegisterRequest = AccountRegisterRequest(
                 userData.emailAddresses.first().emailAddress,
