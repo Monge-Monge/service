@@ -28,20 +28,20 @@ class Weight(
 
 | Method   | Endpoint           | 설명                              |
 |----------|--------------------|-----------------------------------|
-| `POST`   | `/api/weights`     | 몸무게 기록 생성                  |
-| `GET`    | `/api/weights`     | 내 몸무게 목록 조회 (페이징, 기간 필터) |
-| `GET`    | `/api/weights/{id}`| 단건 조회                         |
-| `PUT`    | `/api/weights/{id}`| 몸무게 기록 수정                  |
-| `DELETE` | `/api/weights/{id}`| 몸무게 기록 삭제                  |
+| `POST`   | `/weights`     | 몸무게 기록 생성                  |
+| `GET`    | `/weights`     | 내 몸무게 목록 조회 (페이징, 기간 필터) |
+| `GET`    | `/weights/{id}`| 단건 조회                         |
+| `PUT`    | `/weights/{id}`| 몸무게 기록 수정                  |
+| `DELETE` | `/weights/{id}`| 몸무게 기록 삭제                  |
 
 ### 1-3. 그래프용 통계 API
 
 | Method | Endpoint                          | 설명               |
 |--------|-----------------------------------|--------------------|
-| `GET`  | `/api/weights/graph?period=WEEK`  | 주간 그래프 데이터 |
-| `GET`  | `/api/weights/graph?period=MONTH` | 월간 그래프 데이터 |
-| `GET`  | `/api/weights/graph?period=YEAR`  | 연간 그래프 데이터 |
-| `GET`  | `/api/weights/stats`              | 통계 (최고/최저/평균/변화량) |
+| `GET`  | `/weights/graph?period=WEEK`  | 주간 그래프 데이터 |
+| `GET`  | `/weights/graph?period=MONTH` | 월간 그래프 데이터 |
+| `GET`  | `/weights/graph?period=YEAR`  | 연간 그래프 데이터 |
+| `GET`  | `/weights/stats`              | 통계 (최고/최저/평균/변화량) |
 
 ### 1-4. 패키지 구조 (기존 헥사고날 패턴 유지)
 
