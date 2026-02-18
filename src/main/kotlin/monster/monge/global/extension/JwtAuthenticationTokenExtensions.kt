@@ -7,5 +7,5 @@ fun JwtAuthenticationToken.accountId(): Long {
 }
 
 fun JwtAuthenticationToken.accountIdOrNull(): Long? {
-    return this.token.claims["accountId"] as Long?
+    return this.token.claims["sub_id"] as Long?
 }
