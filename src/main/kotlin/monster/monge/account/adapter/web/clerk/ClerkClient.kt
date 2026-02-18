@@ -2,6 +2,7 @@ package monster.monge.account.adapter.web.clerk
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
@@ -17,13 +18,14 @@ class ClerkClient(
     fun mergeAndUpdate(providerId: String, metadata: Map<String, Any>) {
         log.info { "Clerk API 호출 시작: PATCH /v1/users/${providerId}/metadata, metadata=${metadata}" }
         try {
-            restClient.patch()
+            val response = restClient.patch()
                 .uri("/v1/users/$providerId/metadata")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer $clerkApiKey")
                 .body(mapOf("public_metadata" to metadata))
                 .retrieve()
-            log.info { "Clerk API 호출 성공: PATCH /v1/users/${providerId}/metadata" }
+                .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
+            log.info { "Clerk API 호출 성공: PATCH /v1/users/${providerId}/metadata, Response: $response" }
         } catch (e: Exception) {
             log.error(e) {"Clerk API 호출 실패: PATCH /v1/users/${providerId}/metadata" }
             throw e
