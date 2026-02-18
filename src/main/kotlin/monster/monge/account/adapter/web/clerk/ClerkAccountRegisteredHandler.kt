@@ -13,6 +13,6 @@ class ClerkAccountRegisteredHandler(
     @Async
     @EventListener
     fun handle(event: AccountRegistered) {
-        clerkClient.mergeAndUpdate(event.providerId, mapOf("accountId" to event.userId))
+        clerkClient.mergeAndUpdate(event.providerId, mapOf("sub_id" to event.userId))
     }
 }

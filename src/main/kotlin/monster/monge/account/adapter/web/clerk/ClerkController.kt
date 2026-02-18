@@ -28,11 +28,14 @@ class ClerkController(
         svixSignatureValidator.verify(payload, svixId, svixSignature, svixTimestamp)
 
         val event = objectMapper.readValue(payload, ClerkWebhookEvent::class.java)
-        val userData = event.data
-        val accountRegisterRequest = AccountRegisterRequest(
-            userData.emailAddresses.first().emailAddress,
-            userData.id)
-        accountRegister.register(accountRegisterRequest)
+
+        if (event.type != "user.created") {
+            val userData = event.data
+            val accountRegisterRequest = AccountRegisterRequest(
+                userData.emailAddresses.first().emailAddress,
+                userData.id)
+            accountRegister.register(accountRegisterRequest)
+        }
 
         return ResponseEntity.ok().build()
     }

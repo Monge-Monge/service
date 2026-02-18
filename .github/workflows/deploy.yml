@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.OCI_USERNAME }}
           key: ${{ secrets.OCI_KEY }}
           script: |
-            cd ~/app  # docker-compose.yml이 있는 폴더로 이동
+            cd ~/app  # docker-compose.yml이 있는 폴더로 이동                                         
       
             # .env 파일 동적 생성 (환경변수 관리)
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
