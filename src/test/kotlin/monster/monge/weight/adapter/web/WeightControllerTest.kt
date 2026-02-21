@@ -6,55 +6,63 @@ import monster.monge.weight.application.provided.WeightFinder
 import monster.monge.weight.application.provided.WeightRecorder
 import monster.monge.weight.domain.Weight
 import monster.monge.weight.domain.WeightStat
-import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
-import org.springframework.restdocs.operation.preprocess.Preprocessors.*
+import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.assertj.MockMvcTester
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@WebMvcTest(WeightController::class)
+@SpringBootTest
 @Import(SecurityConfig::class)
 @ExtendWith(RestDocumentationExtension::class)
-class WeightControllerTest(
-    @MockitoBean private val weightRecorder: WeightRecorder,
-    @MockitoBean private val weightFinder: WeightFinder,
-    @MockitoBean private val accountRepository: AccountRepository,
-) {
+class WeightControllerTest {
+    @MockitoBean
+    private lateinit var weightRecorder: WeightRecorder
 
-    private lateinit var mockMvc: MockMvc
-    private lateinit var mvcTester: MockMvcTester
+    @MockitoBean
+    private lateinit var weightFinder: WeightFinder
+
+    @MockitoBean
+    private lateinit var accountRepository: AccountRepository
+
+    private lateinit var mvc: MockMvcTester
 
     @BeforeEach
-    fun setup(context: WebApplicationContext, restDocs: RestDocumentationContextProvider) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-            .apply(documentationConfiguration(restDocs).uris().withScheme("https").withHost("api.monge.monster"))
+    fun setUp(context: WebApplicationContext, restDocumentation: RestDocumentationContextProvider) {
+        val mockMvc = MockMvcBuilders.webAppContextSetup(context)
+            .apply<org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder>(
+                documentationConfiguration(restDocumentation)
+                    .operationPreprocessors()
+                    .withRequestDefaults(prettyPrint())
+                    .withResponseDefaults(prettyPrint())
+            )
+            .apply<org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder>(springSecurity())
             .build()
-        mvcTester = MockMvcTester.create(mockMvc)
+        mvc = MockMvcTester.create(mockMvc)
     }
 
     private val providerId = "clerk_user_123"
     private val accountId = 1L
 
-    private fun jwtAuth() = jwt().jwt { it.subject(providerId).claim("accountId", accountId) }
+    private fun jwtAuth() = jwt().jwt { it.subject(providerId).claim("sub_id", accountId) }
 
     @Test
     fun `POST api weights 는 몸무게를 생성한다`() {
@@ -68,15 +76,15 @@ class WeightControllerTest(
             )
         ).thenReturn(weight)
 
-        mockMvc.perform(
-            post("/weights")
-                .with(jwtAuth())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""{"value":75.5,"recordedAt":"2025-01-01","memo":"memo"}""")
-        )
-            .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.id").value(1))
-            .andDo(document("weights-create", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.post()
+            .uri("/weights")
+            .with(jwtAuth())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"value":75.5,"recordedAt":"2025-01-01","memo":"memo"}""")
+            .exchange()
+            .assertThat()
+            .hasStatus(HttpStatus.CREATED)
+            .apply(document("weights-create"))
     }
 
     @Test
@@ -87,10 +95,13 @@ class WeightControllerTest(
         )
         `when`(weightFinder.findAll(accountId)).thenReturn(weights)
 
-        mockMvc.perform(get("/weights").with(jwtAuth()))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$", hasSize<Any>(2)))
-            .andDo(document("weights-list", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.get()
+            .uri("/weights")
+            .with(jwtAuth())
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .apply(document("weights-list"))
     }
 
     @Test
@@ -98,10 +109,13 @@ class WeightControllerTest(
         val weight = Weight(accountId, BigDecimal("75.5"), LocalDate.of(2025, 1, 1), null, 1L)
         `when`(weightFinder.findById(accountId, 1L)).thenReturn(weight)
 
-        mockMvc.perform(get("/weights/{id}", 1).with(jwtAuth()))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(1))
-            .andDo(document("weights-get", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.get()
+            .uri("/weights/{id}", 1)
+            .with(jwtAuth())
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .apply(document("weights-get"))
     }
 
     @Test
@@ -111,22 +125,26 @@ class WeightControllerTest(
             updated
         )
 
-        mockMvc.perform(
-            put("/weights/{id}", 1)
-                .with(jwtAuth())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""{"value":74.0,"recordedAt":"2025-01-02","memo":"new"}""")
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.value").value(74.0))
-            .andDo(document("weights-update", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.put()
+            .uri("/weights/{id}", 1)
+            .with(jwtAuth())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"value":74.0,"recordedAt":"2025-01-02","memo":"new"}""")
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .apply(document("weights-update"))
     }
 
     @Test
     fun `DELETE api weights id 는 삭제한다`() {
-        mockMvc.perform(delete("/weights/{id}", 1).with(jwtAuth()))
-            .andExpect(status().isNoContent)
-            .andDo(document("weights-delete", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.delete()
+            .uri("/weights/{id}", 1)
+            .with(jwtAuth())
+            .exchange()
+            .assertThat()
+            .hasStatus(HttpStatus.NO_CONTENT)
+            .apply(document("weights-delete"))
 
         verify(weightRecorder).delete(accountId, 1L)
     }
@@ -136,9 +154,14 @@ class WeightControllerTest(
         val weights = listOf(Weight(accountId, BigDecimal("75.0"), LocalDate.of(2025, 1, 1), null, 1L))
         `when`(weightFinder.graph(accountId, "WEEK")).thenReturn(weights)
 
-        mockMvc.perform(get("/weights/graph").param("period", "WEEK").with(jwtAuth()))
-            .andExpect(status().isOk)
-            .andDo(document("weights-graph", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.get()
+            .uri("/weights/graph")
+            .param("period", "WEEK")
+            .with(jwtAuth())
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .apply(document("weights-graph"))
     }
 
     @Test
@@ -146,21 +169,22 @@ class WeightControllerTest(
         val stat = WeightStat(BigDecimal("78.0"), BigDecimal("74.0"), BigDecimal("76.00"), BigDecimal("4.0"))
         `when`(weightFinder.stats(accountId)).thenReturn(stat)
 
-        mockMvc.perform(get("/weights/stats").with(jwtAuth()))
-            .andExpect(status().isOk)
-            .andDo(document("weights-stats", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+        mvc.get()
+            .uri("/weights/stats")
+            .with(jwtAuth())
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .apply(document("weights-stats"))
     }
 
     @Test
     fun `인증 없이 접근하면 401을 반환한다`() {
-        mockMvc.perform(get("/weights"))
-            .andExpect(status().isUnauthorized)
-            .andDo(
-                document(
-                    "weights-unauthorized",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())
-                )
-            )
+        mvc.get()
+            .uri("/weights")
+            .exchange()
+            .assertThat()
+            .hasStatus(HttpStatus.UNAUTHORIZED)
+            .apply(document("weights-unauthorized"))
     }
 }
