@@ -28,6 +28,7 @@ class SecurityConfig {
             } // 중요: CSRF 비활성화
             authorizeHttpRequests {
                 authorize("/webhooks/clerk/**", permitAll)
+                authorize("/docs/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
             oauth2ResourceServer {

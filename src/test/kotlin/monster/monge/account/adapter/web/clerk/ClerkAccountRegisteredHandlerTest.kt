@@ -25,6 +25,6 @@ class ClerkAccountRegisteredHandlerTest {
 
         handler.handle(event)
 
-        verify(clerkClient).mergeAndUpdate("testProviderId", mapOf("accountId" to "1"))
+        verify(clerkClient).mergeAndUpdate("testProviderId", mapOf("sub_id" to "1"))
     }
 }

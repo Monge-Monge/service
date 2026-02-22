@@ -1,9 +1,12 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
+
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
     id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.3.0"
+    id("org.asciidoctor.jvm.convert") version "4.0.4"
 }
 
 group = "monster"
@@ -21,6 +24,7 @@ repositories {
 }
 
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
+val snippetsDir by extra { file("build/generated-snippets") }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-h2console")
@@ -36,7 +40,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server-test")
     testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-test-autoconfigure")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-restdocs")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     mockitoAgent("org.mockito:mockito-core:5.20.0") { isTransitive = false }
@@ -54,9 +62,20 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    outputs.dir(snippetsDir)
+}
+
+tasks.getByName<AsciidoctorTask>("asciidoctor") {
+    dependsOn(tasks.test)
+    inputs.dir(snippetsDir)
+    setAttributes(
+        mapOf(
+            "snippets" to snippetsDir
+        )
+    )
 }
 
 tasks.jar {
@@ -64,5 +83,9 @@ tasks.jar {
 }
 
 tasks.bootJar {
+    dependsOn("asciidoctor")
+    from("build/docs/asciidoc") {
+        into("static/docs")
+    }
     archiveFileName.set("app.jar")
 }

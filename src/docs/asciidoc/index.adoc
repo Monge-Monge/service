@@ -1,0 +1,43 @@
+= Monge Service API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== Weights API
+
+=== Create Weight
+include::{snippets}/weights-create/http-request.adoc[]
+include::{snippets}/weights-create/http-response.adoc[]
+
+=== List Weights
+include::{snippets}/weights-list/http-request.adoc[]
+include::{snippets}/weights-list/http-response.adoc[]
+
+=== Get Weight
+include::{snippets}/weights-get/http-request.adoc[]
+include::{snippets}/weights-get/http-response.adoc[]
+
+=== Update Weight
+include::{snippets}/weights-update/http-request.adoc[]
+include::{snippets}/weights-update/http-response.adoc[]
+
+=== Delete Weight
+include::{snippets}/weights-delete/http-request.adoc[]
+include::{snippets}/weights-delete/http-response.adoc[]
+
+=== Weight Graph
+include::{snippets}/weights-graph/http-request.adoc[]
+include::{snippets}/weights-graph/http-response.adoc[]
+
+=== Weight Stats
+include::{snippets}/weights-stats/http-request.adoc[]
+include::{snippets}/weights-stats/http-response.adoc[]
+
+== Webhooks
+
+=== Clerk Webhook
+include::{snippets}/clerk-webhook/http-request.adoc[]
+include::{snippets}/clerk-webhook/http-response.adoc[]

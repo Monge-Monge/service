@@ -6,21 +6,32 @@ import monster.monge.account.domain.AccountRegisterRequest
 import monster.monge.global.config.SecurityConfig
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
 import tools.jackson.databind.ObjectMapper
 
-@WebMvcTest(ClerkController::class)
+@AutoConfigureRestDocs
+@WebMvcTest(controllers = [ClerkController::class])
 @Import(SecurityConfig::class)
-class ClerkControllerTest(
-    @MockitoBean private val signatureValidator: SvixSignatureValidator,
-    @MockitoBean private val accountRegister: AccountRegister,
-    private val objectMapper: ObjectMapper,
-    private val tester: MockMvcTester
-) {
+class ClerkControllerTest {
+    @MockitoBean
+    private lateinit var signatureValidator: SvixSignatureValidator
+
+    @MockitoBean
+    private lateinit var accountRegister: AccountRegister
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var mvc: MockMvcTester
 
     @Test
     fun `웹훅이 정상적으로 처리된다`() {
@@ -28,7 +39,7 @@ class ClerkControllerTest(
         val email = "test@example.com"
         val providerId = "user_123"
         val request = AccountRegisterRequest(email, providerId)
-        
+
         val clerkPayload = mapOf(
             "data" to mapOf(
                 "email_addresses" to listOf(
@@ -38,19 +49,25 @@ class ClerkControllerTest(
             ),
             "type" to "user.created"
         )
+        val payload = objectMapper.writeValueAsString(clerkPayload)
+        val svixId = "msg_123"
+        val svixSignature = "v1,abc"
+        val svixTimestamp = "1234567890"
 
         // when
         `when`(accountRegister.register(request)).thenReturn(Account(email, providerId, 1L))
 
-        //then
-        tester.post()
+        // then
+        mvc.post()
             .uri("/webhooks/clerk")
-            .header("svix-id", "msg_123")
-            .header("svix-signature", "v1,abc")
-            .header("svix-timestamp", "1234567890")
+            .header("svix-id", svixId)
+            .header("svix-signature", svixSignature)
+            .header("svix-timestamp", svixTimestamp)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(clerkPayload))
+            .content(payload)
+            .exchange()
             .assertThat()
             .hasStatusOk()
+            .apply(document("clerk-webhook"))
     }
 }
