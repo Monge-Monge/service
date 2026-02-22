@@ -12,7 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -30,9 +32,9 @@ import org.springframework.web.context.WebApplicationContext
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@SpringBootTest
+@AutoConfigureRestDocs
+@WebMvcTest(controllers = [WeightController::class])
 @Import(SecurityConfig::class)
-@ExtendWith(RestDocumentationExtension::class)
 class WeightControllerTest {
     @MockitoBean
     private lateinit var weightRecorder: WeightRecorder
@@ -43,21 +45,8 @@ class WeightControllerTest {
     @MockitoBean
     private lateinit var accountRepository: AccountRepository
 
+    @Autowired
     private lateinit var mvc: MockMvcTester
-
-    @BeforeEach
-    fun setUp(context: WebApplicationContext, restDocumentation: RestDocumentationContextProvider) {
-        val mockMvc = MockMvcBuilders.webAppContextSetup(context)
-            .apply<org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder>(
-                documentationConfiguration(restDocumentation)
-                    .operationPreprocessors()
-                    .withRequestDefaults(prettyPrint())
-                    .withResponseDefaults(prettyPrint())
-            )
-            .apply<org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder>(springSecurity())
-            .build()
-        mvc = MockMvcTester.create(mockMvc)
-    }
 
     private val providerId = "clerk_user_123"
     private val accountId = 1L

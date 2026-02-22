@@ -1,32 +1,43 @@
-= Monge Service API 문서
+= Monge Service API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
 :toc: left
 :toclevels: 2
-:sectnums:
+:sectlinks:
 
-== Weights
+== Weights API
 
-=== 몸무게 생성
-operation::weights-create[snippets='curl-request,http-request,http-response']
+=== Create Weight
+include::{snippets}/weights-create/http-request.adoc[]
+include::{snippets}/weights-create/http-response.adoc[]
 
-=== 몸무게 목록 조회
-operation::weights-list[snippets='curl-request,http-request,http-response']
+=== List Weights
+include::{snippets}/weights-list/http-request.adoc[]
+include::{snippets}/weights-list/http-response.adoc[]
 
-=== 몸무게 단건 조회
-operation::weights-get[snippets='curl-request,http-request,http-response']
+=== Get Weight
+include::{snippets}/weights-get/http-request.adoc[]
+include::{snippets}/weights-get/http-response.adoc[]
 
-=== 몸무게 수정
-operation::weights-update[snippets='curl-request,http-request,http-response']
+=== Update Weight
+include::{snippets}/weights-update/http-request.adoc[]
+include::{snippets}/weights-update/http-response.adoc[]
 
-=== 몸무게 삭제
-operation::weights-delete[snippets='curl-request,http-request,http-response']
+=== Delete Weight
+include::{snippets}/weights-delete/http-request.adoc[]
+include::{snippets}/weights-delete/http-response.adoc[]
 
-=== 몸무게 그래프 조회
-operation::weights-graph[snippets='curl-request,http-request,http-response']
+=== Weight Graph
+include::{snippets}/weights-graph/http-request.adoc[]
+include::{snippets}/weights-graph/http-response.adoc[]
 
-=== 몸무게 통계 조회
-operation::weights-stats[snippets='curl-request,http-request,http-response']
+=== Weight Stats
+include::{snippets}/weights-stats/http-request.adoc[]
+include::{snippets}/weights-stats/http-response.adoc[]
 
-== Clerk Webhook
+== Webhooks
 
-=== Clerk 웹훅 처리
-operation::clerk-webhook[snippets='curl-request,http-request,http-response']
+=== Clerk Webhook
+include::{snippets}/clerk-webhook/http-request.adoc[]
+include::{snippets}/clerk-webhook/http-response.adoc[]

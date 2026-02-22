@@ -1,3 +1,5 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
+
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
@@ -22,7 +24,6 @@ repositories {
 }
 
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
-
 val snippetsDir by extra { file("build/generated-snippets") }
 
 dependencies {
@@ -67,9 +68,14 @@ tasks.test {
     outputs.dir(snippetsDir)
 }
 
-tasks.getByName("asciidoctor") {
+tasks.getByName<AsciidoctorTask>("asciidoctor") {
     dependsOn(tasks.test)
     inputs.dir(snippetsDir)
+    setAttributes(
+        mapOf(
+            "snippets" to snippetsDir
+        )
+    )
 }
 
 tasks.jar {

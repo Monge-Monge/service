@@ -4,30 +4,22 @@ import monster.monge.account.application.provided.AccountRegister
 import monster.monge.account.domain.Account
 import monster.monge.account.domain.AccountRegisterRequest
 import monster.monge.global.config.SecurityConfig
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.restdocs.RestDocumentationContextProvider
-import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
-import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 import tools.jackson.databind.ObjectMapper
 
-@SpringBootTest
+@AutoConfigureRestDocs
+@WebMvcTest(controllers = [ClerkController::class])
 @Import(SecurityConfig::class)
-@ExtendWith(RestDocumentationExtension::class)
 class ClerkControllerTest {
     @MockitoBean
     private lateinit var signatureValidator: SvixSignatureValidator
@@ -38,21 +30,8 @@ class ClerkControllerTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
+    @Autowired
     private lateinit var mvc: MockMvcTester
-
-    @BeforeEach
-    fun setUp(context: WebApplicationContext, restDocumentation: RestDocumentationContextProvider) {
-        val mockMvc = MockMvcBuilders.webAppContextSetup(context)
-            .apply<DefaultMockMvcBuilder>(
-                documentationConfiguration(restDocumentation)
-                    .operationPreprocessors()
-                    .withRequestDefaults(prettyPrint())
-                    .withResponseDefaults(prettyPrint())
-            )
-            .apply<DefaultMockMvcBuilder>(springSecurity())
-            .build()
-        mvc = MockMvcTester.create(mockMvc)
-    }
 
     @Test
     fun `웹훅이 정상적으로 처리된다`() {
@@ -70,6 +49,10 @@ class ClerkControllerTest {
             ),
             "type" to "user.created"
         )
+        val payload = objectMapper.writeValueAsString(clerkPayload)
+        val svixId = "msg_123"
+        val svixSignature = "v1,abc"
+        val svixTimestamp = "1234567890"
 
         // when
         `when`(accountRegister.register(request)).thenReturn(Account(email, providerId, 1L))
@@ -77,11 +60,11 @@ class ClerkControllerTest {
         // then
         mvc.post()
             .uri("/webhooks/clerk")
-            .header("svix-id", "msg_123")
-            .header("svix-signature", "v1,abc")
-            .header("svix-timestamp", "1234567890")
+            .header("svix-id", svixId)
+            .header("svix-signature", svixSignature)
+            .header("svix-timestamp", svixTimestamp)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(clerkPayload))
+            .content(payload)
             .exchange()
             .assertThat()
             .hasStatusOk()
