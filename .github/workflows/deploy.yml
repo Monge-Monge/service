@@ -20,7 +20,7 @@ jobs:
           cache: gradle
 
       - name: Build with Gradle
-        run: ./gradlew bootJar -x test
+        run: ./gradlew build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
