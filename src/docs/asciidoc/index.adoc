@@ -1,4 +1,4 @@
-= Monge Service API Guide
+= Monge Service API 가이드
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -6,38 +6,113 @@
 :toclevels: 2
 :sectlinks:
 
-== Weights API
+== 공통 사항
+본 API는 JWT 기반 인증을 사용합니다. 모든 요청의 `Authorization` 헤더에 `Bearer {JWT}` 형식으로 토큰을 포함해야 합니다.
 
-=== Create Weight
+== 몸무게(Weights) API
+
+=== 몸무게 기록 생성
+include::{snippets}/weights-create/curl-request.adoc[]
 include::{snippets}/weights-create/http-request.adoc[]
 include::{snippets}/weights-create/http-response.adoc[]
 
-=== List Weights
+=== 몸무게 목록 조회
+include::{snippets}/weights-list/curl-request.adoc[]
 include::{snippets}/weights-list/http-request.adoc[]
 include::{snippets}/weights-list/http-response.adoc[]
 
-=== Get Weight
+=== 몸무게 단건 조회
+include::{snippets}/weights-get/curl-request.adoc[]
 include::{snippets}/weights-get/http-request.adoc[]
 include::{snippets}/weights-get/http-response.adoc[]
 
-=== Update Weight
+=== 몸무게 수정
+include::{snippets}/weights-update/curl-request.adoc[]
 include::{snippets}/weights-update/http-request.adoc[]
 include::{snippets}/weights-update/http-response.adoc[]
 
-=== Delete Weight
+=== 몸무게 삭제
+include::{snippets}/weights-delete/curl-request.adoc[]
 include::{snippets}/weights-delete/http-request.adoc[]
 include::{snippets}/weights-delete/http-response.adoc[]
 
-=== Weight Graph
+=== 몸무게 그래프 데이터 조회
+include::{snippets}/weights-graph/curl-request.adoc[]
 include::{snippets}/weights-graph/http-request.adoc[]
 include::{snippets}/weights-graph/http-response.adoc[]
 
-=== Weight Stats
+=== 몸무게 통계 조회
+include::{snippets}/weights-stats/curl-request.adoc[]
 include::{snippets}/weights-stats/http-request.adoc[]
 include::{snippets}/weights-stats/http-response.adoc[]
 
-== Webhooks
+== 게시글(Posts) API
 
-=== Clerk Webhook
-include::{snippets}/clerk-webhook/http-request.adoc[]
-include::{snippets}/clerk-webhook/http-response.adoc[]
+=== 게시글 작성
+include::{snippets}/posts-create/curl-request.adoc[]
+include::{snippets}/posts-create/http-request.adoc[]
+include::{snippets}/posts-create/http-response.adoc[]
+
+=== 피드 조회
+include::{snippets}/posts-feed/curl-request.adoc[]
+include::{snippets}/posts-feed/http-request.adoc[]
+include::{snippets}/posts-feed/http-response.adoc[]
+
+=== 게시글 좋아요
+include::{snippets}/posts-like/curl-request.adoc[]
+include::{snippets}/posts-like/http-request.adoc[]
+include::{snippets}/posts-like/http-response.adoc[]
+
+=== 게시글 좋아요 취소
+include::{snippets}/posts-unlike/curl-request.adoc[]
+include::{snippets}/posts-unlike/http-request.adoc[]
+include::{snippets}/posts-unlike/http-response.adoc[]
+
+=== 댓글 작성
+include::{snippets}/posts-comment-create/curl-request.adoc[]
+include::{snippets}/posts-comment-create/http-request.adoc[]
+include::{snippets}/posts-comment-create/http-response.adoc[]
+
+=== 댓글 삭제
+include::{snippets}/posts-comment-delete/curl-request.adoc[]
+include::{snippets}/posts-comment-delete/http-request.adoc[]
+include::{snippets}/posts-comment-delete/http-response.adoc[]
+
+== 프로필(Profiles) API
+
+=== 내 프로필 조회
+include::{snippets}/profiles-me-get/curl-request.adoc[]
+include::{snippets}/profiles-me-get/http-request.adoc[]
+include::{snippets}/profiles-me-get/http-response.adoc[]
+
+=== 프로필 수정
+include::{snippets}/profiles-me-update/curl-request.adoc[]
+include::{snippets}/profiles-me-update/http-request.adoc[]
+include::{snippets}/profiles-me-update/http-response.adoc[]
+
+=== 타 유저 프로필 조회
+include::{snippets}/profiles-get/curl-request.adoc[]
+include::{snippets}/profiles-get/http-request.adoc[]
+include::{snippets}/profiles-get/http-response.adoc[]
+
+== 팔로우(Follows) API
+
+=== 팔로우하기
+include::{snippets}/follows-create/curl-request.adoc[]
+include::{snippets}/follows-create/http-request.adoc[]
+include::{snippets}/follows-create/http-response.adoc[]
+
+=== 언팔로우하기
+include::{snippets}/follows-delete/curl-request.adoc[]
+include::{snippets}/follows-delete/http-request.adoc[]
+include::{snippets}/follows-delete/http-response.adoc[]
+
+=== 팔로워 목록 조회
+include::{snippets}/follows-followers-list/curl-request.adoc[]
+include::{snippets}/follows-followers-list/http-request.adoc[]
+include::{snippets}/follows-followers-list/http-response.adoc[]
+
+=== 팔로잉 목록 조회
+include::{snippets}/follows-followings-list/curl-request.adoc[]
+include::{snippets}/follows-followings-list/http-request.adoc[]
+include::{snippets}/follows-followings-list/http-response.adoc[]
