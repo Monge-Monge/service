@@ -85,9 +85,9 @@ class Profile(
 
 | Method | Endpoint                      | 설명                 |
 |--------|-------------------------------|----------------------|
-| `GET`  | `/api/profiles/me`            | 내 프로필 조회       |
-| `PUT`  | `/api/profiles/me`            | 내 프로필 수정       |
-| `GET`  | `/api/profiles/{accountId}`   | 다른 유저 프로필 조회 |
+| `GET`  | `/profiles/me`            | 내 프로필 조회       |
+| `PUT`  | `/profiles/me`            | 내 프로필 수정       |
+| `GET`  | `/profiles/{accountId}`   | 다른 유저 프로필 조회 |
 
 ### 2-2. 게시글 / 피드 (Post)
 
@@ -108,11 +108,11 @@ class Post(
 
 | Method   | Endpoint            | 설명                     |
 |----------|---------------------|--------------------------|
-| `POST`   | `/api/posts`        | 게시글 작성              |
-| `GET`    | `/api/posts/feed`   | 피드 조회 (팔로잉 기반)  |
-| `GET`    | `/api/posts/{id}`   | 게시글 상세              |
-| `PUT`    | `/api/posts/{id}`   | 게시글 수정              |
-| `DELETE` | `/api/posts/{id}`   | 게시글 삭제              |
+| `POST`   | `/posts`        | 게시글 작성              |
+| `GET`    | `/posts/feed`   | 피드 조회 (팔로잉 기반)  |
+| `GET`    | `/posts/{id}`   | 게시글 상세              |
+| `PUT`    | `/posts/{id}`   | 게시글 수정              |
+| `DELETE` | `/posts/{id}`   | 게시글 삭제              |
 
 ### 2-3. 팔로우 (Follow)
 
@@ -128,19 +128,19 @@ class Follow(
 
 | Method   | Endpoint                    | 설명         |
 |----------|-----------------------------|--------------|
-| `POST`   | `/api/follows/{accountId}`  | 팔로우       |
-| `DELETE` | `/api/follows/{accountId}`  | 언팔로우     |
-| `GET`    | `/api/follows/followers`    | 팔로워 목록  |
-| `GET`    | `/api/follows/followings`   | 팔로잉 목록  |
+| `POST`   | `/follows/{accountId}`  | 팔로우       |
+| `DELETE` | `/follows/{accountId}`  | 언팔로우     |
+| `GET`    | `/follows/followers`    | 팔로워 목록  |
+| `GET`    | `/follows/followings`   | 팔로잉 목록  |
 
 ### 2-4. 좋아요 & 댓글
 
 | Method   | Endpoint                        | 설명        |
 |----------|---------------------------------|-------------|
-| `POST`   | `/api/posts/{postId}/likes`     | 좋아요      |
-| `DELETE` | `/api/posts/{postId}/likes`     | 좋아요 취소 |
-| `POST`   | `/api/posts/{postId}/comments`  | 댓글 작성   |
-| `DELETE` | `/api/comments/{commentId}`     | 댓글 삭제   |
+| `POST`   | `/posts/{postId}/likes`     | 좋아요      |
+| `DELETE` | `/posts/{postId}/likes`     | 좋아요 취소 |
+| `POST`   | `/posts/{postId}/comments`  | 댓글 작성   |
+| `DELETE` | `/comments/{commentId}`     | 댓글 삭제   |
 
 ---
 
@@ -162,9 +162,9 @@ class Goal(
 
 | Method | Endpoint              | 설명           |
 |--------|-----------------------|----------------|
-| `POST` | `/api/goals`         | 목표 설정      |
-| `GET`  | `/api/goals/current` | 현재 목표 조회 |
-| `GET`  | `/api/goals/history` | 목표 히스토리  |
+| `POST` | `/goals`         | 목표 설정      |
+| `GET`  | `/goals/current` | 현재 목표 조회 |
+| `GET`  | `/goals/history` | 목표 히스토리  |
 
 ### 3-2. 뱃지 & 리워드
 
@@ -177,8 +177,8 @@ class Goal(
 
 | Method | Endpoint                        | 설명       |
 |--------|---------------------------------|------------|
-| `GET`  | `/api/notifications`            | 알림 목록  |
-| `PUT`  | `/api/notifications/{id}/read`  | 읽음 처리  |
+| `GET`  | `/notifications`            | 알림 목록  |
+| `PUT`  | `/notifications/{id}/read`  | 읽음 처리  |
 
 알림 유형: 팔로우, 좋아요, 댓글, 목표 리마인더, 기록 독려
 
