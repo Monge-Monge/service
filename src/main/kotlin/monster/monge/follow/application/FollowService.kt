@@ -1,10 +1,10 @@
 package monster.monge.follow.application
 
 import monster.monge.follow.application.provided.FollowManager
-import monster.monge.follow.application.required.FollowRepository
 import monster.monge.follow.domain.Follow
-import monster.monge.profile.application.required.ProfileRepository
+import monster.monge.follow.domain.FollowRepository
 import monster.monge.profile.domain.Profile
+import monster.monge.profile.domain.ProfileRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

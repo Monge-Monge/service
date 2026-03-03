@@ -1,9 +1,9 @@
 package monster.monge.account.application
 
 import monster.monge.account.application.provided.AccountRegister
-import monster.monge.account.application.required.AccountRepository
 import monster.monge.account.domain.Account
 import monster.monge.account.domain.AccountRegisterRequest
+import monster.monge.account.domain.AccountRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

@@ -1,6 +1,6 @@
 package monster.monge.account.application
 
-import monster.monge.account.application.required.AccountRepository
+import monster.monge.account.domain.AccountRepository
 import monster.monge.account.domain.Account
 import monster.monge.account.domain.AccountRegisterRequest
 import org.assertj.core.api.Assertions.assertThat
@@ -24,15 +24,19 @@ class AccountModifyServiceTest {
 
     @Test
     fun `register는 Account를 생성하고 저장한다`() {
-        val request = AccountRegisterRequest("test@test.test", "testProviderId")
-        val savedAccount = Account("test@test.test", "testProviderId", 1L)
-        `when`(accountRepository.save(any(Account::class.java))).thenReturn(savedAccount)
+        val email = "test@test.test"
+        val providerId = "testProviderId"
+        val request = AccountRegisterRequest(email, providerId)
+        val expectedAccount = Account(email, providerId)
+        val savedAccount = Account(email, providerId, 1L)
+        
+        `when`(accountRepository.save(expectedAccount)).thenReturn(savedAccount)
 
         val result = accountModifyService.register(request)
 
-        assertThat(result.email).isEqualTo("test@test.test")
-        assertThat(result.providerId).isEqualTo("testProviderId")
+        assertThat(result.email).isEqualTo(email)
+        assertThat(result.providerId).isEqualTo(providerId)
         assertThat(result.id).isEqualTo(1L)
-        verify(accountRepository).save(any(Account::class.java))
+        verify(accountRepository).save(expectedAccount)
     }
 }

@@ -1,7 +1,7 @@
 package monster.monge.weight.application
 
-import monster.monge.weight.application.required.WeightRepository
 import monster.monge.weight.domain.Weight
+import monster.monge.weight.domain.WeightRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -12,7 +12,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class WeightQueryServiceTest {
@@ -41,7 +40,7 @@ class WeightQueryServiceTest {
     @Test
     fun `findById는 해당 Weight를 반환한다`() {
         val weight = Weight(accountId, BigDecimal("75.5"), LocalDate.of(2025, 1, 1), null, 1L)
-        `when`(weightRepository.findById(1L)).thenReturn(Optional.of(weight))
+        `when`(weightRepository.findById(1L)).thenReturn(weight)
 
         val result = weightQueryService.findById(accountId, 1L)
 
@@ -50,7 +49,7 @@ class WeightQueryServiceTest {
 
     @Test
     fun `findById는 존재하지 않는 id에 대해 예외를 발생시킨다`() {
-        `when`(weightRepository.findById(999L)).thenReturn(Optional.empty())
+        `when`(weightRepository.findById(999L)).thenReturn(null)
 
         assertThatThrownBy { weightQueryService.findById(accountId, 999L) }
             .isInstanceOf(NoSuchElementException::class.java)
@@ -59,7 +58,7 @@ class WeightQueryServiceTest {
     @Test
     fun `findById는 다른 사용자의 기록에 대해 예외를 발생시킨다`() {
         val weight = Weight(99L, BigDecimal("75.5"), LocalDate.of(2025, 1, 1), null, 1L)
-        `when`(weightRepository.findById(1L)).thenReturn(Optional.of(weight))
+        `when`(weightRepository.findById(1L)).thenReturn(weight)
 
         assertThatThrownBy { weightQueryService.findById(accountId, 1L) }
             .isInstanceOf(IllegalArgumentException::class.java)

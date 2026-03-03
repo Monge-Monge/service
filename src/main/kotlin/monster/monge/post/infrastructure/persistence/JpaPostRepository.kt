@@ -1,9 +1,9 @@
-package monster.monge.post.application.required
+package monster.monge.post.infrastructure.persistence
 
 import monster.monge.post.domain.Post
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface PostRepository : JpaRepository<Post, Long> {
+interface JpaPostRepository : JpaRepository<Post, Long> {
     fun findAllByAccountIdInOrderByCreatedAtDesc(accountIds: List<Long>, pageable: Pageable): List<Post>
 }

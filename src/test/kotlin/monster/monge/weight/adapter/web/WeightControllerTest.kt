@@ -1,6 +1,6 @@
 package monster.monge.weight.adapter.web
 
-import monster.monge.account.application.required.AccountRepository
+import monster.monge.account.domain.AccountRepository
 import monster.monge.global.config.SecurityConfig
 import monster.monge.weight.application.provided.WeightFinder
 import monster.monge.weight.application.provided.WeightRecorder

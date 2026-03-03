@@ -1,6 +1,6 @@
 package monster.monge.profile.adapter.web
 
-import monster.monge.account.application.required.AccountRepository
+import monster.monge.account.domain.AccountRepository
 import monster.monge.global.config.SecurityConfig
 import monster.monge.profile.application.provided.ProfileManager
 import monster.monge.profile.domain.Profile

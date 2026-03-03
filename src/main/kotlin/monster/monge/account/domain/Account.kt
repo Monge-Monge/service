@@ -17,10 +17,28 @@ class Account(
 ): AbstractAggregateRoot<Account>() {
 
     init {
+        Email(email)
+        ProviderId(providerId)
         registerEvent(AccountRegistered(this))
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Account) return false
+        return email == other.email && providerId == other.providerId
+    }
+
+    override fun hashCode(): Int {
+        var result = email.hashCode()
+        result = 31 * result + providerId.hashCode()
+        return result
+    }
+
     companion object {
-        fun from(request: AccountRegisterRequest) =
-            Account(request.email, request.providerId)
+        fun from(request: AccountRegisterRequest): Account {
+            Email(request.email)
+            ProviderId(request.providerId)
+            return Account(request.email, request.providerId)
+        }
     }
 }

@@ -1,11 +1,11 @@
-package monster.monge.post.application.required
+package monster.monge.post.infrastructure.persistence
 
 import monster.monge.post.domain.PostComment
 import monster.monge.post.domain.PostLike
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface PostLikeRepository : JpaRepository<PostLike, Long> {
+interface JpaPostLikeRepository : JpaRepository<PostLike, Long> {
     fun findByPostIdAndAccountId(postId: Long, accountId: Long): PostLike?
 }
 
-interface PostCommentRepository : JpaRepository<PostComment, Long>
+interface JpaPostCommentRepository : JpaRepository<PostComment, Long>
