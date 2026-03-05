@@ -1,6 +1,6 @@
 package monster.monge.post.adapter.web
 
-import monster.monge.account.application.required.AccountRepository
+import monster.monge.account.domain.AccountRepository
 import monster.monge.global.config.SecurityConfig
 import monster.monge.post.application.provided.PostManager
 import monster.monge.post.domain.Post

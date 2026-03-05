@@ -2,7 +2,7 @@ package monster.monge.weight.application
 
 import monster.monge.weight.application.provided.WeightFinder
 import monster.monge.weight.application.provided.WeightRecorder
-import monster.monge.weight.application.required.WeightRepository
+import monster.monge.weight.domain.WeightRepository
 import monster.monge.weight.domain.Weight
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +29,6 @@ class WeightModifyService(
 
     override fun delete(accountId: Long, id: Long) {
         val weight = weightFinder.findById(accountId, id)
-        weightRepository.delete(weight)
+        weightRepository.deleteById(weight.id!!)
     }
 }

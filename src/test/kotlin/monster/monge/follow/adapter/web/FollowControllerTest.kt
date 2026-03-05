@@ -1,6 +1,6 @@
 package monster.monge.follow.adapter.web
 
-import monster.monge.account.application.required.AccountRepository
+import monster.monge.account.domain.AccountRepository
 import monster.monge.global.config.SecurityConfig
 import monster.monge.follow.application.provided.FollowManager
 import monster.monge.profile.domain.Profile

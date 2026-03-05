@@ -1,14 +1,8 @@
 package monster.monge.post.application
 
-import monster.monge.follow.application.required.FollowRepository
+import monster.monge.follow.domain.FollowRepository
 import monster.monge.post.application.provided.PostManager
-import monster.monge.post.application.required.PostCommentRepository
-import monster.monge.post.application.required.PostLikeRepository
-import monster.monge.post.application.required.PostRepository
-import monster.monge.post.domain.Post
-import monster.monge.post.domain.PostCategory
-import monster.monge.post.domain.PostComment
-import monster.monge.post.domain.PostLike
+import monster.monge.post.domain.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +29,7 @@ class PostService(
     }
 
     override fun getPost(id: Long): Post {
-        return postRepository.findById(id).orElseThrow { NoSuchElementException("Post not found: $id") }
+        return postRepository.findById(id) ?: throw NoSuchElementException("Post not found: $id")
     }
 
     override fun updatePost(id: Long, accountId: Long, content: String, imageUrl: String?): Post {
@@ -75,7 +69,7 @@ class PostService(
 
     override fun deleteComment(commentId: Long, accountId: Long) {
         val comment = postCommentRepository.findById(commentId)
-            .orElseThrow { NoSuchElementException("Comment not found: $commentId") }
+            ?: throw NoSuchElementException("Comment not found: $commentId")
         if (comment.accountId != accountId) throw IllegalArgumentException("Not your comment")
         postCommentRepository.delete(comment)
     }

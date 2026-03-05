@@ -1,8 +1,8 @@
 package monster.monge.profile.application
 
 import monster.monge.profile.application.provided.ProfileManager
-import monster.monge.profile.application.required.ProfileRepository
 import monster.monge.profile.domain.Profile
+import monster.monge.profile.domain.ProfileRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
