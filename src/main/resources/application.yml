@@ -2,6 +2,10 @@ spring:
   application:
     name: monge-service
 
+  mvc:
+    problemdetails:
+      enabled: true
+
   datasource:
     # 도커 컴포즈의 서비스 이름 'db'를 호스트로 사용합니다.
     url: jdbc:postgresql://db:5432/mongedb
