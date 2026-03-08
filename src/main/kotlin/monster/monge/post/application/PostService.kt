@@ -4,6 +4,7 @@ import monster.monge.follow.domain.FollowRepository
 import monster.monge.post.application.provided.PostManager
 import monster.monge.post.domain.*
 import org.springframework.data.domain.PageRequest
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -34,7 +35,7 @@ class PostService(
 
     override fun updatePost(id: Long, accountId: Long, content: String, imageUrl: String?): Post {
         val post = getPost(id)
-        if (post.accountId != accountId) throw IllegalArgumentException("Not your post")
+        if (post.accountId != accountId) throw AccessDeniedException("Not your post")
         post.content = content
         post.imageUrl = imageUrl
         return postRepository.save(post)
@@ -42,7 +43,7 @@ class PostService(
 
     override fun deletePost(id: Long, accountId: Long) {
         val post = getPost(id)
-        if (post.accountId != accountId) throw IllegalArgumentException("Not your post")
+        if (post.accountId != accountId) throw AccessDeniedException("Not your post")
         postRepository.delete(post)
     }
 
@@ -70,7 +71,7 @@ class PostService(
     override fun deleteComment(commentId: Long, accountId: Long) {
         val comment = postCommentRepository.findById(commentId)
             ?: throw NoSuchElementException("Comment not found: $commentId")
-        if (comment.accountId != accountId) throw IllegalArgumentException("Not your comment")
+        if (comment.accountId != accountId) throw AccessDeniedException("Not your comment")
         postCommentRepository.delete(comment)
     }
 }

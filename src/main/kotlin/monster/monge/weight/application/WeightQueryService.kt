@@ -4,6 +4,7 @@ import monster.monge.weight.application.provided.WeightFinder
 import monster.monge.weight.domain.WeightRepository
 import monster.monge.weight.domain.Weight
 import monster.monge.weight.domain.WeightStat
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -22,7 +23,7 @@ class WeightQueryService(
     @Transactional(readOnly = true)
     override fun findById(accountId: Long, id: Long): Weight {
         val weight = weightRepository.findById(id) ?: throw NoSuchElementException("Weight not found: $id")
-        if (weight.accountId != accountId) throw IllegalArgumentException("Access denied")
+        if (weight.accountId != accountId) throw AccessDeniedException("Access denied")
         return weight
     }
 

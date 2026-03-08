@@ -4,6 +4,7 @@ import monster.monge.weight.domain.Weight
 import monster.monge.weight.domain.WeightRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.springframework.security.access.AccessDeniedException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -61,7 +62,7 @@ class WeightQueryServiceTest {
         `when`(weightRepository.findById(1L)).thenReturn(weight)
 
         assertThatThrownBy { weightQueryService.findById(accountId, 1L) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+            .isInstanceOf(AccessDeniedException::class.java)
     }
 
     @Test
