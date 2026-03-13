@@ -2,6 +2,7 @@ package monster.monge.global.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.web.SecurityFilterChain
@@ -10,6 +11,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 class SecurityConfig {
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
@@ -25,7 +27,7 @@ class SecurityConfig {
             }
             csrf {
                 ignoringRequestMatchers("/webhooks/clerk/**")
-            } // 중요: CSRF 비활성화
+            }
             authorizeHttpRequests {
                 authorize("/webhooks/clerk/**", permitAll)
                 authorize("/docs/**", permitAll)
@@ -33,6 +35,18 @@ class SecurityConfig {
             }
             oauth2ResourceServer {
                 jwt { }
+            }
+            exceptionHandling {
+                authenticationEntryPoint = { _, response, _ ->
+                    response.status = 401
+                    response.contentType = MediaType.APPLICATION_PROBLEM_JSON_VALUE
+                    response.writer.write("""{"type":"about:blank","title":"Unauthorized","status":401,"detail":"Unauthorized"}""")
+                }
+                accessDeniedHandler = { _, response, _ ->
+                    response.status = 403
+                    response.contentType = MediaType.APPLICATION_PROBLEM_JSON_VALUE
+                    response.writer.write("""{"type":"about:blank","title":"Forbidden","status":403,"detail":"Access denied"}""")
+                }
             }
         }
 
