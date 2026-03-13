@@ -36,6 +36,10 @@ spring:
           issuer-uri: https://grand-osprey-71.clerk.accounts.dev
           jwk-set-uri: https://grand-osprey-71.clerk.accounts.dev/.well-known/jwks.json
 
+logging:
+  file:
+    name: /app/logs/monge.log
+
 svix:
   webhook:
     secret: ${SVIX_WEBHOOK_SECRET}
